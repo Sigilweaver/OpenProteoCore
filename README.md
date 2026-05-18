@@ -1,4 +1,4 @@
-# mass-spec-core
+# openproteo-core
 
 Shared foundation for the open Rust mass-spec parsers
 ([opentfraw](https://github.com/Sigilweaver/OpenTFRaw),

@@ -1,4 +1,4 @@
-//! `mass-spec-core` is the shared foundation for the open Rust mass-spec
+//! `openproteo-core` is the shared foundation for the open Rust mass-spec
 //! parsers (`opentfraw`, `opentimstdf`, `openwraw`).
 //!
 //! It exposes:
@@ -13,7 +13,7 @@
 //!   [`write_indexed_mzml`].
 //!
 //! Each vendor crate is a standalone tool (a user can pull in `opentfraw`
-//! alone and get parsing **and** mzML export); `mass-spec-core` is the
+//! alone and get parsing **and** mzML export); `openproteo-core` is the
 //! shared vocabulary that keeps the three parsers in lock-step.
 
 mod enums;
