@@ -13,7 +13,7 @@
 
 use std::io::{Result, Write};
 
-use crate::enums::{Activation, Analyzer, Polarity, ScanMode};
+use crate::enums::{Activation, Analyzer, MobilityArrayKind, Polarity, ScanMode};
 use crate::source::SpectrumSource;
 use crate::types::{CvTerm, RunMetadata, SpectrumRecord};
 
@@ -213,10 +213,11 @@ fn activation_cv(act: Activation, analyzer: Option<Analyzer>) -> (&'static str, 
 pub fn write_mzml<S: SpectrumSource + ?Sized, W: Write>(src: &mut S, out: &mut W) -> Result<()> {
     let meta = src.run_metadata();
     let count = src.spectrum_count_hint().unwrap_or(0);
+    let mobility_kind = meta.mobility_array_kind;
 
     write_prologue(out, &meta, count, false)?;
     for rec in src.iter_spectra() {
-        write_spectrum(out, &rec)?;
+        write_spectrum(out, &rec, mobility_kind)?;
     }
     writeln!(out, r#"    </spectrumList>"#)?;
     writeln!(out, r#"  </run>"#)?;
@@ -232,6 +233,7 @@ pub fn write_indexed_mzml<S: SpectrumSource + ?Sized, W: Write>(
 ) -> Result<()> {
     let meta = src.run_metadata();
     let count = src.spectrum_count_hint().unwrap_or(0);
+    let mobility_kind = meta.mobility_array_kind;
 
     let mut cw = CountingWriter::new(out);
     write_prologue(&mut cw, &meta, count, true)?;
@@ -239,7 +241,7 @@ pub fn write_indexed_mzml<S: SpectrumSource + ?Sized, W: Write>(
     let mut offsets: Vec<(String, u64)> = Vec::with_capacity(count);
     for rec in src.iter_spectra() {
         offsets.push((rec.native_id.clone(), cw.pos));
-        write_spectrum(&mut cw, &rec)?;
+        write_spectrum(&mut cw, &rec, mobility_kind)?;
     }
 
     writeln!(cw, r#"    </spectrumList>"#)?;
@@ -402,7 +404,11 @@ fn write_cv<W: Write>(out: &mut W, indent: &str, cv: &CvTerm) -> Result<()> {
     )
 }
 
-fn write_spectrum<W: Write>(out: &mut W, rec: &SpectrumRecord) -> Result<()> {
+fn write_spectrum<W: Write>(
+    out: &mut W,
+    rec: &SpectrumRecord,
+    mobility_kind: Option<MobilityArrayKind>,
+) -> Result<()> {
     let spectrum_type = if rec.ms_level <= 1 {
         ("MS:1000579", "MS1 spectrum")
     } else {
@@ -637,8 +643,17 @@ fn write_spectrum<W: Write>(out: &mut W, rec: &SpectrumRecord) -> Result<()> {
     if n_peaks > 0 {
         let mz_b64 = encode_f64_array(&rec.mz);
         let int_b64 = encode_f32_array(&rec.intensity);
+        let mobility_b64_opt = rec
+            .inv_mobility_per_peak
+            .as_ref()
+            .filter(|v| v.len() == n_peaks)
+            .map(|v| encode_f32_array(v));
+        let array_count = 2 + usize::from(mobility_b64_opt.is_some());
 
-        writeln!(out, r#"        <binaryDataArrayList count="2">"#)?;
+        writeln!(
+            out,
+            r#"        <binaryDataArrayList count="{array_count}">"#
+        )?;
 
         writeln!(
             out,
@@ -679,6 +694,44 @@ fn write_spectrum<W: Write>(out: &mut W, rec: &SpectrumRecord) -> Result<()> {
         )?;
         writeln!(out, r#"            <binary>{int_b64}</binary>"#)?;
         writeln!(out, r#"          </binaryDataArray>"#)?;
+
+        if let Some(mobility_b64) = mobility_b64_opt {
+            let (cv_acc, cv_name, unit_acc, unit_ref, unit_name) = match mobility_kind {
+                Some(MobilityArrayKind::DriftTimeMilliseconds) => (
+                    "MS:1003007",
+                    "raw ion mobility array",
+                    "UO:0000028",
+                    "UO",
+                    "millisecond",
+                ),
+                Some(MobilityArrayKind::InverseReducedVsPerCm2) | None => (
+                    "MS:1003008",
+                    "raw inverse reduced ion mobility array",
+                    "MS:1002814",
+                    "MS",
+                    "volt-second per square centimeter",
+                ),
+            };
+            writeln!(
+                out,
+                r#"          <binaryDataArray encodedLength="{}">"#,
+                mobility_b64.len()
+            )?;
+            writeln!(
+                out,
+                r#"            <cvParam cvRef="MS" accession="{cv_acc}" name="{cv_name}" value="" unitCvRef="{unit_ref}" unitAccession="{unit_acc}" unitName="{unit_name}"/>"#
+            )?;
+            writeln!(
+                out,
+                r#"            <cvParam cvRef="MS" accession="MS:1000521" name="32-bit float" value=""/>"#
+            )?;
+            writeln!(
+                out,
+                r#"            <cvParam cvRef="MS" accession="MS:1000576" name="no compression" value=""/>"#
+            )?;
+            writeln!(out, r#"            <binary>{mobility_b64}</binary>"#)?;
+            writeln!(out, r#"          </binaryDataArray>"#)?;
+        }
 
         writeln!(out, r#"        </binaryDataArrayList>"#)?;
     }

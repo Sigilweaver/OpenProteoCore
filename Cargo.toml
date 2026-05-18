@@ -15,6 +15,15 @@ readme = "README.md"
 [lints.rust]
 unsafe_code = "forbid"
 
+[features]
+default = []
+# Build a zero-copy Apache Arrow `RecordBatch` from a stream of
+# `SpectrumRecord`s. Pulls in the `arrow-array` / `arrow-schema` crates.
+arrow = ["dep:arrow-array", "dep:arrow-schema", "dep:arrow-buffer"]
+
 [dependencies]
+arrow-array = { version = "58", optional = true }
+arrow-schema = { version = "58", optional = true }
+arrow-buffer = { version = "58", optional = true }
 
 [dev-dependencies]

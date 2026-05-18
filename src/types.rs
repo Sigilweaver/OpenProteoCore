@@ -7,7 +7,7 @@
 //! consumer takes any `SpectrumSource` without caring which vendor produced
 //! it.
 
-use crate::enums::{Activation, Analyzer, Polarity, ScanMode};
+use crate::enums::{Activation, Analyzer, MobilityArrayKind, Polarity, ScanMode};
 
 /// A PSI-MS controlled-vocabulary term.
 ///
@@ -193,4 +193,8 @@ pub struct RunMetadata {
     pub software_version: String,
     /// Instrument acquisition start time (RFC 3339), when available.
     pub start_timestamp: Option<String>,
+    /// Interpretation of any per-peak ion mobility array carried by the
+    /// spectra in this run. `None` is treated as the Bruker convention
+    /// ([`MobilityArrayKind::InverseReducedVsPerCm2`]) for back-compat.
+    pub mobility_array_kind: Option<MobilityArrayKind>,
 }

@@ -22,6 +22,7 @@ impl ToySource {
             software_name: "toy-writer".into(),
             software_version: "0.0.0".into(),
             start_timestamp: None,
+            mobility_array_kind: None,
         };
         let s1 = SpectrumRecord {
             index: 0,

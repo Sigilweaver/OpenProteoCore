@@ -82,6 +82,22 @@ pub enum Activation {
     EThcD,
 }
 
+/// Unit + meaning of a per-peak ion mobility array.
+///
+/// Selects the CV term and unit emitted by the mzML writer when a
+/// [`crate::SpectrumRecord::inv_mobility_per_peak`] array is present.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum MobilityArrayKind {
+    /// Bruker TIMS convention: per-peak 1/K0 in volt-second per square
+    /// centimeter. Emitted as MS:1003008 "raw inverse reduced ion mobility
+    /// array" with unit MS:1002814.
+    InverseReducedVsPerCm2,
+    /// Waters traveling-wave IMS convention: per-peak drift time in
+    /// milliseconds. Emitted as MS:1003007 "raw ion mobility array" with
+    /// unit UO:0000028 "millisecond".
+    DriftTimeMilliseconds,
+}
+
 impl MsPower {
     /// Numeric MS level (1 for MS1, 2 for MS2, ...). Returns 1 for `Undefined`,
     /// matching the convention used in mzML output.

@@ -21,7 +21,11 @@ mod mzml;
 mod source;
 mod types;
 
-pub use enums::{Activation, Analyzer, MsPower, Polarity, ScanMode};
+#[cfg(feature = "arrow")]
+pub mod arrow;
+pub mod conformance;
+
+pub use enums::{Activation, Analyzer, MobilityArrayKind, MsPower, Polarity, ScanMode};
 pub use mzml::{write_indexed_mzml, write_mzml};
 pub use source::SpectrumSource;
 pub use types::{ChromatogramRecord, CvTerm, PrecursorInfo, RunMetadata, SpectrumRecord};
