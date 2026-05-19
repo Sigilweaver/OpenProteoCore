@@ -1,5 +1,19 @@
 # openproteo-core
 
+> Part of the
+> [OpenProteo](https://github.com/Sigilweaver/OpenProteo) stack for
+> proteomics raw-file access. `openproteo-core` is the
+> vendor-neutral foundation: records, the `SpectrumSource` trait,
+> a canonical mzML 1.1.0 writer, an Arrow bridge, and the
+> cross-vendor conformance suite. It is consumed by every reader in
+> the stack -
+> [OpenTFRaw](https://github.com/Sigilweaver/OpenTFRaw) (Thermo),
+> [OpenTimsTDF](https://github.com/Sigilweaver/OpenTimsTDF) (Bruker),
+> [OpenWRaw](https://github.com/Sigilweaver/OpenWRaw) (Waters) -
+> and by the
+> [openproteo-io](https://github.com/Sigilweaver/OpenProteo)
+> umbrella.
+
 Shared foundation for the open Rust mass-spec parsers
 ([opentfraw](https://github.com/Sigilweaver/OpenTFRaw),
 [opentimstdf](https://github.com/Sigilweaver/OpenTimsTDF),
