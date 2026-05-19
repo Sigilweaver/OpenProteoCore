@@ -113,6 +113,10 @@ The `vendor2mzml validate` subcommand in
 [OpenProteo](https://github.com/Sigilweaver/OpenProteo) runs this
 harness on any vendor input or pre-existing mzML.
 
+To assemble a local corpus for running the harness across vendors,
+see the shared corpus schema and fetcher described in
+[OpenProteo/docs/CORPUS.md](https://github.com/Sigilweaver/OpenProteo/blob/main/docs/CORPUS.md).
+
 ## Feature flags
 
 | Flag    | Default | Effect                                                  |
