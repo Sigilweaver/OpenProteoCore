@@ -24,7 +24,7 @@ parser implements, a canonical mzML 1.1.0 writer (with optional indexed
 mzML output), an optional Apache Arrow bridge, and a cross-vendor
 conformance harness.
 
-- MSRV: 1.75
+- MSRV: 1.85
 - License: Apache-2.0
 - `#![forbid(unsafe_code)]`
 

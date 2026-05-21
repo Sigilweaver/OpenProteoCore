@@ -1,7 +1,7 @@
 # CI for OpenProteoCore.
 #
 # Standalone crate, no path-dependent siblings. Runs fmt + clippy + test
-# on Linux and macOS, and a 1.75 MSRV check.
+# on Linux and macOS, and a 1.85 MSRV check.
 
 name: CI
 
@@ -34,12 +34,12 @@ jobs:
       - run: cargo test --workspace --all-features
 
   msrv:
-    name: MSRV check (1.75)
+    name: MSRV check (1.85)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: 1.75
+          toolchain: 1.85
       - uses: Swatinem/rust-cache@v2
       - run: cargo check --workspace --all-features

@@ -191,8 +191,11 @@ impl SpectrumBatchBuilder {
             precursor_native_id: StringBuilder::new(),
             precursor_activation: StringBuilder::new(),
             precursor_analyzer: StringBuilder::new(),
-            mz: LargeListBuilder::new(Float64Builder::new())
-                .with_field(Arc::new(Field::new("item", DataType::Float64, false))),
+            mz: LargeListBuilder::new(Float64Builder::new()).with_field(Arc::new(Field::new(
+                "item",
+                DataType::Float64,
+                false,
+            ))),
             intensity: LargeListBuilder::new(Float32Builder::new())
                 .with_field(Arc::new(Field::new("item", DataType::Float32, false))),
             inv_mobility_per_peak: LargeListBuilder::new(Float32Builder::new())
@@ -213,30 +216,38 @@ impl SpectrumBatchBuilder {
         self.native_id.append_value(&rec.native_id);
         self.ms_level.append_value(rec.ms_level as u8);
         self.polarity.append_option(rec.polarity.map(polarity_str));
-        self.scan_mode.append_option(rec.scan_mode.map(scan_mode_str));
+        self.scan_mode
+            .append_option(rec.scan_mode.map(scan_mode_str));
         self.analyzer.append_option(rec.analyzer.map(analyzer_str));
         self.filter.append_option(rec.filter.as_deref());
         self.retention_time_sec.append_value(rec.retention_time_sec);
         self.total_ion_current.append_option(rec.total_ion_current);
         self.base_peak_mz.append_option(rec.base_peak_mz);
-        self.base_peak_intensity.append_option(rec.base_peak_intensity);
+        self.base_peak_intensity
+            .append_option(rec.base_peak_intensity);
         self.low_mz.append_option(rec.low_mz);
         self.high_mz.append_option(rec.high_mz);
-        self.ion_injection_time_ms.append_option(rec.ion_injection_time_ms);
+        self.ion_injection_time_ms
+            .append_option(rec.ion_injection_time_ms);
         self.inv_mobility.append_option(rec.inv_mobility);
 
         match &rec.precursor {
             Some(p) => {
                 self.precursor_target_mz.append_option(p.target_mz);
                 self.precursor_selected_mz.append_option(p.selected_mz);
-                self.precursor_isolation_width.append_option(p.isolation_width);
+                self.precursor_isolation_width
+                    .append_option(p.isolation_width);
                 self.precursor_charge.append_option(p.charge);
                 self.precursor_intensity.append_option(p.intensity);
-                self.precursor_collision_energy.append_option(p.collision_energy);
+                self.precursor_collision_energy
+                    .append_option(p.collision_energy);
                 self.precursor_ce_is_nce.append_value(u8::from(p.ce_is_nce));
-                self.precursor_native_id.append_option(p.precursor_native_id.as_deref());
-                self.precursor_activation.append_option(p.activation.map(activation_str));
-                self.precursor_analyzer.append_option(p.analyzer.map(analyzer_str));
+                self.precursor_native_id
+                    .append_option(p.precursor_native_id.as_deref());
+                self.precursor_activation
+                    .append_option(p.activation.map(activation_str));
+                self.precursor_analyzer
+                    .append_option(p.analyzer.map(analyzer_str));
             }
             None => {
                 self.precursor_target_mz.append_null();

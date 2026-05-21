@@ -8,6 +8,18 @@ crate adheres to [Semantic Versioning](https://semver.org/).
 
 - _No unreleased changes yet._
 
+## [1.0.0] - 2026-05-21
+
+First stable release. No API changes from `0.1.0`; promoted to `1.0.0`
+to align with the rest of the OpenProteo stack and to make the crate's
+stability contract explicit. `0.1.0` has been yanked from crates.io.
+
+### Changed
+
+- MSRV bumped from 1.75 to 1.85 to track the `arrow-58.x` toolchain
+  requirement (`edition = "2024"` Cargo feature) and to align with the
+  rest of the OpenProteo stack.
+
 ## [0.1.0]
 
 Initial published shape of the crate. This release defines the

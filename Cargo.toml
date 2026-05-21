@@ -1,9 +1,9 @@
 [package]
 name = "openproteo-core"
 description = "Shared types, traits, and mzML writer for open Rust mass-spec parsers."
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
-rust-version = "1.75"
+rust-version = "1.85"
 authors = ["Nathan Riley <git@nathanriley.com>"]
 license = "Apache-2.0"
 repository = "https://github.com/Sigilweaver/OpenProteoCore"

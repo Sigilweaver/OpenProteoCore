@@ -85,30 +85,58 @@ pub enum ConformanceError {
 impl std::fmt::Display for ConformanceError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::PeakArrayLengthMismatch { native_id, mz_len, intensity_len } => write!(
+            Self::PeakArrayLengthMismatch {
+                native_id,
+                mz_len,
+                intensity_len,
+            } => write!(
                 f,
                 "{native_id}: mz.len()={mz_len} != intensity.len()={intensity_len}"
             ),
-            Self::MobilityArrayLengthMismatch { native_id, mz_len, mobility_len } => write!(
+            Self::MobilityArrayLengthMismatch {
+                native_id,
+                mz_len,
+                mobility_len,
+            } => write!(
                 f,
                 "{native_id}: inv_mobility_per_peak.len()={mobility_len} != mz.len()={mz_len}"
             ),
-            Self::TicMismatch { native_id, declared, computed } => {
-                write!(f, "{native_id}: declared TIC {declared} != computed {computed}")
+            Self::TicMismatch {
+                native_id,
+                declared,
+                computed,
+            } => {
+                write!(
+                    f,
+                    "{native_id}: declared TIC {declared} != computed {computed}"
+                )
             }
-            Self::BasePeakIntensityMismatch { native_id, declared, computed } => write!(
+            Self::BasePeakIntensityMismatch {
+                native_id,
+                declared,
+                computed,
+            } => write!(
                 f,
                 "{native_id}: declared base-peak intensity {declared} != max(intensity) {computed}"
             ),
-            Self::MissingPrecursor { native_id, ms_level } => write!(
-                f,
-                "{native_id}: ms_level={ms_level} but no precursor info"
-            ),
-            Self::RetentionTimeNonMonotonic { prefix, previous, current, native_id } => write!(
+            Self::MissingPrecursor {
+                native_id,
+                ms_level,
+            } => write!(f, "{native_id}: ms_level={ms_level} but no precursor info"),
+            Self::RetentionTimeNonMonotonic {
+                prefix,
+                previous,
+                current,
+                native_id,
+            } => write!(
                 f,
                 "{native_id}: RT regressed in stream '{prefix}' ({previous} -> {current})"
             ),
-            Self::IndexSequence { native_id, previous, current } => write!(
+            Self::IndexSequence {
+                native_id,
+                previous,
+                current,
+            } => write!(
                 f,
                 "{native_id}: index sequence broken (prev={previous:?}, current={current})"
             ),
@@ -143,9 +171,7 @@ fn rt_stream_key(native_id: &str) -> String {
 ///
 /// The source is iterated to completion on success; on failure iteration
 /// stops at the offending spectrum.
-pub fn assert_source_invariants<S: SpectrumSource>(
-    src: &mut S,
-) -> Result<usize, ConformanceError> {
+pub fn assert_source_invariants<S: SpectrumSource>(src: &mut S) -> Result<usize, ConformanceError> {
     assert_iter_invariants(src.iter_spectra())
 }
 
@@ -337,7 +363,11 @@ mod tests {
 
     #[test]
     fn happy_path_passes() {
-        let mut src = ToySource(vec![ok_spec(0, 1, 1.0), ok_spec(1, 2, 2.0), ok_spec(2, 1, 3.0)]);
+        let mut src = ToySource(vec![
+            ok_spec(0, 1, 1.0),
+            ok_spec(1, 2, 2.0),
+            ok_spec(2, 1, 3.0),
+        ]);
         assert_eq!(assert_source_invariants(&mut src).unwrap(), 3);
     }
 
@@ -365,7 +395,10 @@ mod tests {
         let s1 = ok_spec(1, 1, 2.0);
         let mut src = ToySource(vec![s0, s1]);
         let err = assert_source_invariants(&mut src).unwrap_err();
-        assert!(matches!(err, ConformanceError::RetentionTimeNonMonotonic { .. }));
+        assert!(matches!(
+            err,
+            ConformanceError::RetentionTimeNonMonotonic { .. }
+        ));
     }
 
     #[test]
@@ -374,6 +407,9 @@ mod tests {
         s.inv_mobility_per_peak = Some(vec![0.5]);
         let mut src = ToySource(vec![s]);
         let err = assert_source_invariants(&mut src).unwrap_err();
-        assert!(matches!(err, ConformanceError::MobilityArrayLengthMismatch { .. }));
+        assert!(matches!(
+            err,
+            ConformanceError::MobilityArrayLengthMismatch { .. }
+        ));
     }
 }
