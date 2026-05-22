@@ -61,5 +61,5 @@ that involve vendor-specific parsing are usually better routed to the
 relevant parser repo:
 
 - Thermo `.raw`: [OpenTFRaw](https://github.com/Sigilweaver/OpenTFRaw)
-- Bruker `.d/` (timsTOF): [OpenTimsTDF](https://github.com/Sigilweaver/OpenTDF)
+- Bruker `.d/` (timsTOF): [OpenTimsTDF](https://github.com/Sigilweaver/OpenTimsTDF)
 - Waters MassLynx `.raw/`: [OpenWRaw](https://github.com/Sigilweaver/OpenWRaw)
