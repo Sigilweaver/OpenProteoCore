@@ -8,6 +8,24 @@ crate adheres to [Semantic Versioning](https://semver.org/).
 
 - _No unreleased changes yet._
 
+## [1.0.1] - 2026-05-22
+
+Documentation polish to bring the crate landing page in line with the
+rest of the OpenProteo stack. No API or behavioural changes.
+
+### Changed
+
+- README rewritten with CI / crates.io / docs.rs / license badges, a
+  stack callout pointing at the sibling vendor readers, and a link to
+  the unified docs hub at `sigilweaver.app/openproteo/docs`.
+- `Cargo.toml`: `homepage` now points to the docs site, `documentation`
+  field added (docs.rs), and a `[package.metadata.docs.rs]` block was
+  added so docs.rs renders all features (`arrow`).
+
+### Removed
+
+- `ROADMAP.md` (internal planning artifact; no longer tracked).
+
 ## [1.0.0] - 2026-05-21
 
 First stable release. No API changes from `0.1.0`; promoted to `1.0.0`

@@ -1,16 +1,21 @@
 [package]
 name = "openproteo-core"
 description = "Shared types, traits, and mzML writer for open Rust mass-spec parsers."
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 rust-version = "1.85"
 authors = ["Nathan Riley <git@nathanriley.com>"]
 license = "Apache-2.0"
 repository = "https://github.com/Sigilweaver/OpenProteoCore"
-homepage = "https://github.com/Sigilweaver/OpenProteoCore"
+homepage = "https://sigilweaver.app/openproteo/docs/"
+documentation = "https://docs.rs/openproteo-core"
 keywords = ["mass-spectrometry", "mzml", "proteomics", "metabolomics", "psi-ms"]
 categories = ["science", "encoding"]
 readme = "README.md"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
 
 [lints.rust]
 unsafe_code = "forbid"

@@ -1,50 +1,44 @@
 # openproteo-core
 
-> Part of the
-> [OpenProteo](https://github.com/Sigilweaver/OpenProteo) stack for
-> proteomics raw-file access. `openproteo-core` is the
-> vendor-neutral foundation: records, the `SpectrumSource` trait,
-> a canonical mzML 1.1.0 writer, an Arrow bridge, and the
-> cross-vendor conformance suite. It is consumed by every reader in
-> the stack -
+[![CI](https://github.com/Sigilweaver/OpenProteoCore/actions/workflows/ci.yml/badge.svg)](https://github.com/Sigilweaver/OpenProteoCore/actions/workflows/ci.yml)
+[![crates.io](https://img.shields.io/crates/v/openproteo-core.svg)](https://crates.io/crates/openproteo-core)
+[![docs.rs](https://img.shields.io/docsrs/openproteo-core)](https://docs.rs/openproteo-core)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+
+> Part of the [OpenProteo](https://sigilweaver.app/openproteo/docs/)
+> stack for proteomics raw-file access. Sibling readers:
 > [OpenTFRaw](https://github.com/Sigilweaver/OpenTFRaw) (Thermo),
 > [OpenTimsTDF](https://github.com/Sigilweaver/OpenTimsTDF) (Bruker),
-> [OpenWRaw](https://github.com/Sigilweaver/OpenWRaw) (Waters) -
-> and by the
-> [openproteo-io](https://github.com/Sigilweaver/OpenProteo)
-> umbrella.
+> [OpenWRaw](https://github.com/Sigilweaver/OpenWRaw) (Waters).
 
-Shared foundation for the open Rust mass-spec parsers
-([opentfraw](https://github.com/Sigilweaver/OpenTFRaw),
-[opentimstdf](https://github.com/Sigilweaver/OpenTimsTDF),
-[openwraw](https://github.com/Sigilweaver/OpenWRaw)).
-
-Defines the vendor-neutral records, the `SpectrumSource` trait every
-parser implements, a canonical mzML 1.1.0 writer (with optional indexed
-mzML output), an optional Apache Arrow bridge, and a cross-vendor
-conformance harness.
+Shared, vendor-neutral foundation for the OpenProteo mass-spec stack:
+the `SpectrumSource` trait every parser implements, the canonical
+`SpectrumRecord` / `RunMetadata` types, a streaming mzML 1.1.0 writer
+(with optional indexed mzML output and SHA-1 footer), an optional
+Apache Arrow `RecordBatch` bridge, and a cross-vendor conformance
+harness.
 
 - MSRV: 1.85
 - License: Apache-2.0
 - `#![forbid(unsafe_code)]`
 
-Each vendor crate stays a complete standalone tool: a user pulls in
-`opentfraw` alone and gets parsing **and** mzML export. This crate is
-the shared vocabulary that keeps the three parsers in lock-step.
+Documentation: [sigilweaver.app/openproteo/docs](https://sigilweaver.app/openproteo/docs)
 
 ## Install
 
-```toml
-[dependencies]
-openproteo-core = "0.1"
+```sh
+cargo add openproteo-core
+```
 
-# Optional: zero-copy Arrow RecordBatch builder for spectra.
-openproteo-core = { version = "0.1", features = ["arrow"] }
+With the optional Arrow bridge:
+
+```sh
+cargo add openproteo-core --features arrow
 ```
 
 ## Quick example
 
-Implement `SpectrumSource` and write a valid mzML document:
+Implement `SpectrumSource` and write a valid indexed mzML document:
 
 ```rust
 use openproteo_core::{
@@ -109,48 +103,15 @@ Failures surface as `ConformanceError` variants
 (`PeakArrayLengthMismatch`, `MobilityArrayLengthMismatch`,
 `RetentionTimeNonMonotonic`, and others).
 
-The `vendor2mzml validate` subcommand in
-[OpenProteo](https://github.com/Sigilweaver/OpenProteo) runs this
-harness on any vendor input or pre-existing mzML.
-
-To assemble a local corpus for running the harness across vendors,
-see the shared corpus schema and fetcher described in
-[OpenProteo/docs/CORPUS.md](https://github.com/Sigilweaver/OpenProteo/blob/main/docs/CORPUS.md).
+The `vendor2mzml validate` subcommand in the
+[OpenProteo](https://github.com/Sigilweaver/OpenProteo) umbrella runs
+this harness on any vendor input or pre-existing mzML.
 
 ## Feature flags
 
-| Flag    | Default | Effect                                                  |
-| ------- | :-----: | ------------------------------------------------------- |
-| `arrow` |    no   | Enables `arrow_array::RecordBatch` building from spectra. |
-
-## Ecosystem
-
-```text
-              openproteo-core   (this crate: types + trait + mzML writer)
-                     ^
-        +------------+------------+
-        |            |            |
-   opentfraw    opentimstdf    openwraw       (vendor parsers)
-        |            |            |
-        +------------+------------+
-                     v
-               openproteo-io      (umbrella: detect_format, collect, to_mzml)
-                     |
-        +------------+------------+
-        |                         |
-  vendor2mzml CLI            openproteo (Python metapackage)
-```
-
-- Unified docs hub: https://github.com/Sigilweaver/OpenProteo
-- Umbrella crate (workspace): https://github.com/Sigilweaver/OpenProteo
-- Vendor parsers:
-  [opentfraw](https://github.com/Sigilweaver/OpenTFRaw),
-  [opentimstdf](https://github.com/Sigilweaver/OpenTimsTDF),
-  [openwraw](https://github.com/Sigilweaver/OpenWRaw).
-
-## Roadmap
-
-See [ROADMAP.md](ROADMAP.md) for the multi-phase plan.
+| Flag    | Default | Effect                                                    |
+| ------- | :-----: | --------------------------------------------------------- |
+| `arrow` |   off   | Enables `arrow_array::RecordBatch` building from spectra. |
 
 ## Changelog
 
@@ -158,4 +119,4 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-Apache-2.0
+Apache-2.0. See [LICENSE](LICENSE).
